@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Extração dados externos
+Globals:
+  Function:
+    Environment:
+      Variables:
+        BUCKET_NAME: picpay-datalake-sandbox
+        BUCKET_EXTRACT_KEY: leonardocastro/results
+        BUCKET_METADATA_KEY: leonardocastro
+Resources:
+  CrawlerExternalDataStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      DefinitionUri: statemachine/crawler_external_data.asl.json
+      DefinitionSubstitutions:
+        ControlFunctionArn: !GetAtt ControlFunction.Arn
+        CrawlerFunctionArn: !GetAtt CrawlerFunction.Arn
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref ControlFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref CrawlerFunction
+  CrawlerExternalDataRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Description: !Sub Role para execução dos lambdas
+      RoleName: !Sub picpay-crawler-external-data
+      Policies:
+        - PolicyName: !Sub picpay-crawler-external-data
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Action:
+                  - "s3:PutObject"
+                  - "s3:PutObjectTagging"
+                  - "s3:GetObject"
+                Effect: Allow
+                Resource: "arn:aws:s3:::picpay-datalake-sandbox/*"
+  ControlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub picpay-crawler-external-data-control
+      Role: !GetAtt CrawlerExternalDataRole.Arn
+      CodeUri: functions/control/
+      Handler: control.control
+      Runtime: python3.8
+      Timeout: 300 # timeout of your lambda function
+      MemorySize: 128 # memory size of your lambda function
+      Description: Realiza o controle das extração dos dados externos
+  CrawlerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub picpay-crawler-external-data
+      Role: !GetAtt CrawlerExternalDataRole.Arn
+      CodeUri: functions/crawler/
+      Handler: crawler.crawler
+      Runtime: python3.8
+      Timeout: 300 # timeout of your lambda function
+      MemorySize: 128 # memory size of your lambda function
+      Description: Realiza a extração dos dados externos

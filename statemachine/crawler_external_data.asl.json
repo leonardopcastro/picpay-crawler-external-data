@@ -1,0 +1,25 @@
+{
+  "Comment": "This is your state machine",
+  "StartAt": "Control",
+  "States": {
+    "Control": {
+      "Type": "Task",
+      "Resource": "${ControlFunctionArn}",
+      "Next": "Map"
+    },
+    "Map": {
+      "Type": "Map",
+      "End": true,
+      "Iterator": {
+        "StartAt": "Crawler",
+        "States": {
+          "Crawler": {
+            "Type": "Task",
+            "Resource": "${CrawlerFunctionArn}",
+            "End": true
+          }
+        }
+      }
+    }
+  }
+}
