@@ -22,6 +22,7 @@ def str_to_float(text: str) -> Optional[float]:
 def extract(url: str, series: int, start_date: str, end_date: str) -> str:
     ''''
     Função para extração de séries temporais do bacen
+    Para mais informações sobre os dados consultar: https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries
 
 
     :param url: Url do sistema a ser extraído

@@ -1,19 +1,4 @@
-import json
-
 import boto3
-
-
-def get_file_from_s3(bucket: str, key: str) -> json:
-    '''
-    Realiza o download de um arquivo do s3
-
-    :param bucket: Nome do bucket localizado no s3
-    :param key: Caminho do arquivo dentro do bucket
-    '''
-    s3 = boto3.client('s3')
-
-    obj = s3.get_object(Bucket=bucket, Key=key)
-    return json.loads(obj['Body'].read())
 
 def save_file_into_s3(data: str, bucket: str, key: str):
     '''

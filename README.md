@@ -19,35 +19,28 @@ Esse script conterá toda lógica da extração e por obrigatoriedade essa lógi
 
 `def extract(**params):`
 
-Para que esse novo script de extração seja acessivel ao projeto devemos criar uma nova entrada no arquivo json do control,
+Para que esse novo script de extração seja acessivel ao projeto devemos criar uma nova entrada no arquivo yaml do control,
 esse arquivo pode ser encontrado no s3 e é referenciado pelas variáveis de ambiente do lambda. O arquivo do control tem 
 a seguinte estrutura
 
 ```
-{
-    "name": "<nome_do_que_esta_sendo_extraido>",
-    "file": "<nome_do_script_de_extração>",
-    "folder": "<nome_da_pasta_onde_está_o_script_de_extração>",
-    "params": {
-        # Parametros que serão passados para a função extract
-    }
-}
+- name: <nome_do_que_esta_sendo_extraido>
+  file: <nome_do_script_de_extração>
+  folder: <nome_da_pasta_onde_está_o_script_de_extração>
+  params: 
+     # Parametros que serão passados para a função extract
 ```
 
 Um exemplo 
 
 ```
-{
-    "name": "selic",
-    "file": "historic_serie",
-    "folder": "bacen",
-    "params": {
-        "url": "https://www3.bcb.gov.br/sgspub/consultarvalores/consultarValoresSeries.do?method=consultarValores",
-        "series": 11,
-        "start_date": "1900-01-01",
-        "end_date": "2021-01-01"
-    }
-}
+- name: selic
+  file: historic_serie
+  folder: bacen
+  params: 
+    url: https://www3.bcb.gov.br/sgspub/consultarvalores/consultarValoresSeries.do?method=consultarValores
+    series: 11
+    start_date: 1900-01-01
 ```
 
 Por padrão o start_date do params é atualizado para a data mais recente após rodar a primeira consulta.

@@ -1,9 +1,8 @@
-import json
-
 import boto3
+import yaml
 
 
-def get_file_from_s3(bucket: str, key: str) -> json:
+def get_file_from_s3(bucket: str, key: str) -> dict:
     '''
     Realiza o download de um arquivo do s3
 
@@ -13,7 +12,7 @@ def get_file_from_s3(bucket: str, key: str) -> json:
     s3 = boto3.client('s3')
 
     obj = s3.get_object(Bucket=bucket, Key=key)
-    return json.loads(obj['Body'].read())
+    return yaml.load(obj['Body'].read())
 
 def save_file_into_s3(data: str, bucket: str, key: str):
     '''
