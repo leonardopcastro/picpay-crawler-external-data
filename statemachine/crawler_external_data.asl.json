@@ -1,5 +1,5 @@
 {
-  "Comment": "This is your state machine",
+  "Comment": "Crawler External Data ASM",
   "StartAt": "Control",
   "States": {
     "Control": {

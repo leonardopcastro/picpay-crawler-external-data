@@ -1,13 +1,17 @@
 - name: selic
   folder: bacen
   file: historic_series
+  update_at: 2021-01-01
+  update_frequency: year
   params:
     url: https://www3.bcb.gov.br/sgspub/consultarvalores/consultarValoresSeries.do?method=consultarValores
     series: 11
-    start_date: 1900-01-01
+    start_date:
     end_date: ''
 - name: sao_paulo
   folder: ibge
   file: ibge_cities
+  update_at:
+  update_frequency: year
   params:
     url: https://cidades.ibge.gov.br/brasil/sp/sao-paulo/panorama
