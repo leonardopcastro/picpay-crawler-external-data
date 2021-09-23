@@ -25,13 +25,13 @@ def control(event: dict, context: dict) -> list:
     for d in metadata:
         if not d.get('update_at'):
             data.append(d)
-            d['update_at'] = date_now
+            d['update_at'] = date_now.strftime('%Y-%m-%d')
         else:
             if (d['update_frequency'] == 'year' and d['update_at'].year != date_now.year) or \
                     (d['update_frequency'] == 'month' and d['update_at'].month != date_now.month) or \
                     (d['update_frequency'] == 'day' and d['update_at'].day != date_now.day):
                 data.append(d)
-                d['update_at'] = date_now
+                d['update_at'] = date_now.strftime('%Y-%m-%d')
 
     # Salva nova versão no s3
     if data:

@@ -1,12 +1,12 @@
 - name: selic
   folder: bacen
   file: historic_series
-  update_at: 2021-01-01
-  update_frequency: year
+  update_at:
+  update_frequency: month
   params:
     url: https://www3.bcb.gov.br/sgspub/consultarvalores/consultarValoresSeries.do?method=consultarValores
     series: 11
-    start_date:
+    start_date: '1900-01-01'
     end_date: ''
 - name: sao_paulo
   folder: ibge

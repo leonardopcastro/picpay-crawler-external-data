@@ -5,21 +5,56 @@
     "Control": {
       "Type": "Task",
       "Resource": "${ControlFunctionArn}",
-      "Next": "Map"
+      "Next": "Parallel"
     },
-    "Map": {
-      "Type": "Map",
-      "End": true,
-      "Iterator": {
-        "StartAt": "Crawler",
-        "States": {
-          "Crawler": {
-            "Type": "Task",
-            "Resource": "${CrawlerFunctionArn}",
-            "End": true
+    "Parallel": {
+      "Type": "Parallel",
+      "Branches": [
+        {
+          "StartAt": "Map",
+          "States": {
+            "Map": {
+              "Type": "Map",
+              "Iterator": {
+                "StartAt": "Crawler",
+                "States": {
+                  "Crawler": {
+                    "Type": "Task",
+                    "Resource": "${CrawlerFunctionArn}",
+                    "Catch": [
+                      {
+                        "ErrorEquals": [
+                          "States.ALL"
+                        ],
+                        "Next": "log errors",
+                        "ResultPath": "$.error"
+                      }
+                    ],
+                    "End": true
+                  },
+                  "log errors": {
+                    "Type": "Task",
+                    "Resource": "${LogFunctionArn}",
+                    "End": true
+                  }
+                }
+              },
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "log process",
+          "States": {
+            "log process": {
+              "Type": "Task",
+              "Resource": "${LogFunctionArn}",
+              "End": true
+            }
           }
         }
-      }
+      ],
+      "End": true
     }
   }
 }

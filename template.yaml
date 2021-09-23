@@ -2,13 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   Extração dados externos
-Globals:
-  Function:
-    Environment:
-      Variables:
-        BUCKET_NAME: picpay-datalake-sandbox
-        BUCKET_EXTRACT_KEY: leonardocastro/results
-        BUCKET_METADATA_KEY: leonardocastro
 Resources:
   CrawlerExternalDataStateMachine:
     Type: AWS::Serverless::StateMachine
@@ -17,11 +10,14 @@ Resources:
       DefinitionSubstitutions:
         ControlFunctionArn: !GetAtt ControlFunction.Arn
         CrawlerFunctionArn: !GetAtt CrawlerFunction.Arn
+        LogFunctionArn: !GetAtt LogFunction.Arn
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref ControlFunction
         - LambdaInvokePolicy:
             FunctionName: !Ref CrawlerFunction
+        - LambdaInvokePolicy:
+            FunctionName: !Ref LogFunction
   CrawlerExternalDataRole:
     Type: AWS::IAM::Role
     Properties:
@@ -60,6 +56,11 @@ Resources:
       Timeout: 300 # timeout of your lambda function
       MemorySize: 128 # memory size of your lambda function
       Description: Realiza o controle das extração dos dados externos
+      Environment:
+        Variables:
+          BUCKET_NAME: picpay-datalake-sandbox
+          BUCKET_EXTRACT_KEY: leonardocastro/picpay_crawler_external_data/results
+          BUCKET_METADATA_KEY: leonardocastro/picpay_crawler_external_data
   CrawlerFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -71,3 +72,24 @@ Resources:
       Timeout: 300 # timeout of your lambda function
       MemorySize: 128 # memory size of your lambda function
       Description: Realiza a extração dos dados externos
+      Environment:
+        Variables:
+          BUCKET_NAME: picpay-datalake-sandbox
+          BUCKET_EXTRACT_KEY: leonardocastro/picpay_crawler_external_data/results
+          BUCKET_METADATA_KEY: leonardocastro/picpay_crawler_external_data
+  LogFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub picpay-crawler-external-data-log
+      Role: !GetAtt CrawlerExternalDataRole.Arn
+      CodeUri: functions/log/
+      Handler: log.log
+      Runtime: python3.8
+      Timeout: 300 # timeout of your lambda function
+      MemorySize: 128 # memory size of your lambda function
+      Description: Insere o log no s3
+      Environment:
+        Variables:
+          BUCKET_NAME: picpay-datalake-sandbox
+          BUCKET_ERROR_KEY: leonardocastro/picpay_crawler_external_data/log/errors
+          BUCKET_LOG_KEY: leonardocastro/picpay_crawler_external_data/log/crawler
