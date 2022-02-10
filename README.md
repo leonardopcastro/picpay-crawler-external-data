@@ -30,8 +30,6 @@ Exemplo de extrutura do arquivo yaml
 - name: <nome_do_que_esta_sendo_extraido>
   file: <nome_do_script_de_extração>
   folder: <nome_da_pasta_onde_está_o_script_de_extração>
-  update_at: <data_atualzacao_da_extracao>
-  update_frequency: <string_de_frequencia> # day | month| year
   params: 
      # Parametros que serão passados para a função extract
 ```
@@ -42,12 +40,8 @@ Exemplo de inserção para extração
 - name: selic
   file: historic_serie
   folder: bacen
-  update_at:
-  update_frequency: month
   params: 
     url: https://www3.bcb.gov.br/sgspub/consultarvalores/consultarValoresSeries.do?method=consultarValores
-    series: 11
-    start_date: 1900-01-01
 ```
 
 ### Upload para aws
