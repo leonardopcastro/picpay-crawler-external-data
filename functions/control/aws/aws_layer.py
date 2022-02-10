@@ -2,6 +2,14 @@ import boto3
 import yaml
 
 
+def list_files_from_s3(bucket: str, prefix: str) -> list:
+    s3 = boto3.resource('s3')
+    s3_bucket = s3.Bucket(bucket)
+
+    objs = s3_bucket.objects.filter(Prefix=prefix)
+
+    return [obj.key for obj in objs]
+
 def get_file_from_s3(bucket: str, key: str) -> dict:
     '''
     Realiza o download de um arquivo do s3

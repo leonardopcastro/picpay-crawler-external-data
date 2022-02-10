@@ -2,6 +2,8 @@
   folder: bacen
   file: historic_series
   is_active: false
+  extension: csv
+  start_date: 2020-01-01
   params:
     url: https://www3.bcb.gov.br/sgspub/consultarvalores/consultarValoresSeries.do?method=consultarValores
     series: 11
@@ -10,5 +12,7 @@
   folder: ibge
   file: ibge_cities
   is_active: false
+  extension: csv
+  start_date: 1900-01-01
   params:
     url: https://cidades.ibge.gov.br/brasil/sp/sao-paulo/panorama
